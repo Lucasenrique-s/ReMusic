@@ -1,42 +1,64 @@
 package com.Recommendusic;
 
-import com.github.yvasyliev.model.Track;
-import com.github.yvasyliev.service.DeezerApi;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 
 public class App {
 
     public static void main(String[] args) {
-        // 1. Crie uma instância da API
-        com.Recommendusic.DeezerApi deezerApi = new DeezerApi();
+        // Caminho para o seu arquivo CSV dentro do projeto
+        String csvFilePath = "data/data_pequeno.csv"; // <-- CONFIRME O NOME DO SEU ARQUIVO!
 
-        String nomeMusica = "Poker Face";
-        System.out.println("Buscando por '" + nomeMusica + "' na API da Deezer...");
+        try (
+                Reader reader = new FileReader(csvFilePath);
+                // Configura o parser para entender que a primeira linha é o cabeçalho (header)
+                CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                        .withHeader()
+                        .withIgnoreHeaderCase()
+                        .withTrim())
+        ) {
+            System.out.println("Lendo o dataset. Processando as primeiras músicas...");
+            int count = 0;
 
-        try {
-            // 2. Use o serviço de busca para procurar a música
-            // O 'findTracks' retorna uma página de resultados, então pegamos o primeiro.
-            deezerApi.search().findTracks(nomeMusica)
-                    .getData()
-                    .stream()
-                    .findFirst() // Pega o primeiro resultado da busca
-                    .ifPresentOrElse(
-                            // 3. Se encontrou a música, imprima os dados dela
-                            track -> {
-                                System.out.println("\n--- Música Encontrada ---");
-                                System.out.println("ID: " + track.getId());
-                                System.out.println("Título: " + track.getTitle());
-                                System.out.println("Artista: " + track.getArtist().getName());
-                                System.out.println("Álbum: " + track.getAlbum().getTitle());
-                                System.out.println("Duração (segundos): " + track.getDuration());
-                                System.out.println("BPM (Tempo): " + track.getBpm());
-                                System.out.println("Link para prévia: " + track.getPreview());
-                            },
-                            // O que fazer se não encontrar a música
-                            () -> System.out.println("Música não encontrada.")
-                    );
+            // Itera sobre cada linha (registro) do CSV
+            for (CSVRecord csvRecord : csvParser) {
+                // Pega os dados de cada coluna pelo nome do cabeçalho
+                String trackName = csvRecord.get("name");
+                String artistName = csvRecord.get("artists");
+                String albumName = csvRecord.get("album");
+                double danceability = Double.parseDouble(csvRecord.get("danceability"));
+                double energy = Double.parseDouble(csvRecord.get("energy"));
+                int tempo = (int) Double.parseDouble(csvRecord.get("tempo"));
 
-        } catch (Exception e) {
-            System.err.println("Ocorreu um erro ao chamar a API da Deezer: " + e.getMessage());
+                System.out.println("\nTrack: " + trackName);
+                System.out.println("Artist: " + artistName);
+                System.out.println("Album: " + albumName);
+                System.out.println("Danceability: " + danceability*100);
+                System.out.println("Energy: " + energy*100);
+
+
+                // --- AQUI COMEÇA A LÓGICA DO SEU GRAFO ---
+                // Por exemplo, você pode criar um nó para cada música ou artista.
+                // System.out.printf("Música: %s, Artista: %s, Dançabilidade: %.2f%n", trackName, artistName, danceability);
+
+                // Para não processar 12 milhões de linhas durante os testes:
+                count++;
+                if (count >= 100) { // Processa apenas as 100 primeiras linhas para teste
+                    break;
+                }
+            }
+            System.out.println("Processamento de teste concluído.");
+
+        } catch (IOException e) {
+            System.err.println("Erro ao ler o arquivo CSV: " + e.getMessage());
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.err.println("Erro ao converter um número. Verifique o formato dos dados no CSV.");
             e.printStackTrace();
         }
     }
