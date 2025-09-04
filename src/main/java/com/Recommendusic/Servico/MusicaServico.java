@@ -1,5 +1,5 @@
 package com.Recommendusic.Servico;
-import com.Recommendusic.Servico.Entidades.Musica;
+import com.Recommendusic.Servico.Entidades.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;

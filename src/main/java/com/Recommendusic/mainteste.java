@@ -1,7 +1,7 @@
 package com.Recommendusic;
 
-import com.Recommendusic.Servico.Entidades.Musica;
-import com.Recommendusic.Servico.MusicaServico;
+import com.Recommendusic.Servico.Entidades.*;
+import com.Recommendusic.Servico.*;
 
 import java.io.IOException;
 import java.util.List;
