@@ -51,6 +51,8 @@ public class MusicaServico {
                     }
                 }
             }
+            Musica.normalize(this.musicas);
+            System.out.println("Catálogo normalizado com sucesso!");
             System.out.println("Catálogo carregado com sucesso! " + this.musicas.size() + " músicas na memória.");
         }
 
@@ -59,6 +61,12 @@ public class MusicaServico {
             return this.musicas.stream()
                     .filter(m -> m.getTrackName().equalsIgnoreCase(nomeMusica) &&
                             m.getTrackArtist().equalsIgnoreCase(nomeArtista))
+                    .findFirst();
+        }
+
+        public Optional<Musica> buscarMusicaPorId(String trackId) {
+            return this.musicas.stream()
+                    .filter(m -> m.getTrackId().equals(trackId))
                     .findFirst();
         }
 
