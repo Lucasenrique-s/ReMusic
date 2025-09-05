@@ -12,13 +12,19 @@ public class Musica {
 
         private final double danceability;
         private final double energy;
-        private final double loudness;
+        private double loudness;
         private final double speechiness;
         private final double acousticness;
         private final double instrumentalness;
         private final double liveness;
         private final double valence;
-        private final double tempo;
+        private double tempo;
+
+        //Variáveis para normalização de Loudness e Tempo pra colocar eles na faixa de 0 e 1.
+        private static final double MIN_TEMPO_FIXO = 50.0;
+        private static final double MAX_TEMPO_FIXO = 250.0;
+        private static final double MIN_LOUDNESS_FIXO = -60.0;
+        private static final double MAX_LOUDNESS_FIXO = 0.0;
 
         public Musica(String trackId, String trackName, String trackArtist, String playlistGenre,
                       double danceability, double energy, double loudness, double speechiness,
@@ -39,6 +45,29 @@ public class Musica {
             this.tempo = tempo;
         }
 
+        public void normalize(List<Musica> musicas){
+            if (musicas == null || musicas.isEmpty()){
+                return;
+            }
+            double rangeTempo = MAX_TEMPO_FIXO - MIN_TEMPO_FIXO;
+            double rangeLoudness = MAX_LOUDNESS_FIXO - MIN_LOUDNESS_FIXO;
+
+            for (Musica musica : musicas) {
+                // --- APLICA A FÓRMULA DE NORMALIZAÇÃO ---
+
+                // Garante que o valor não saia da faixa 0-1, caso uma música tenha
+                // um valor fora da nossa escala fixa (ex: BPM 40 ou 260)
+                double tempoNormalizado = (musica.getTempo() - MIN_TEMPO_FIXO) / rangeTempo;
+                tempoNormalizado = Math.max(0.0, Math.min(1.0, tempoNormalizado)); // Clamping
+
+                double loudnessNormalizado = (musica.getLoudness() - MIN_LOUDNESS_FIXO) / rangeLoudness;
+                loudnessNormalizado = Math.max(0.0, Math.min(1.0, loudnessNormalizado)); // Clamping
+
+                // Define os valores normalizados no objeto Musica
+                setTempo(tempoNormalizado);
+                setLoudness(loudnessNormalizado);
+            }
+        }
 
         public String getTrackId() {
             return trackId;
@@ -90,6 +119,13 @@ public class Musica {
 
         public double getTempo() {
             return tempo;
+        }
+
+        public void setTempo(double valor){
+            tempo = valor;
+        }
+        public void setLoudness(double valor){
+            loudness = valor;
         }
 
         @Override
