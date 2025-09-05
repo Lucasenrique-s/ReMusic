@@ -12,7 +12,7 @@ public class App {
 
     public static void main(String[] args) {
         // Caminho para o seu arquivo CSV dentro do projeto
-        String csvFilePath = "data/data_pequeno.csv"; // <-- CONFIRME O NOME DO SEU ARQUIVO!
+        String csvFilePath = "data/spotify_songs.csv"; // <-- CONFIRME O NOME DO SEU ARQUIVO!
 
         try (
                 Reader reader = new FileReader(csvFilePath);
