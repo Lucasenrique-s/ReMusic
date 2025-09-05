@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RecomendadorServico {
+
     public List<Musica> recomendar(Grafo grafo, Musica musicaInicial, MusicaServico catalogo, int quantidade) {
         // Mapa para guardar a menor distância encontrada do início até cada música
         Map<String, Double> distancias = new HashMap<>();
@@ -45,7 +46,7 @@ public class RecomendadorServico {
             }
         }
         // --- Fim do Algoritmo ---
-/*
+
         // Agora, o mapa 'distancias' contém o caminho mais curto para todas as músicas.
         // Vamos ordenar e pegar as 'quantidade' melhores recomendações.
         return distancias.entrySet().stream()
@@ -55,6 +56,6 @@ public class RecomendadorServico {
                 .map(entry -> catalogo.buscarMusicaPorId(entry.getKey()).orElse(null)) // Converte o ID de volta para um objeto Musica
                 .filter(Objects::nonNull) // Remove qualquer música que não foi encontrada no catálogo
                 .collect(Collectors.toList());
-                */
     }
+
 }

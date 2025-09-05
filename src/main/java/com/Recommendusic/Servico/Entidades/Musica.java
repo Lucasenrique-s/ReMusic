@@ -45,29 +45,27 @@ public class Musica {
             this.tempo = tempo;
         }
 
-        public void normalize(List<Musica> musicas){
-            if (musicas == null || musicas.isEmpty()){
-                return;
-            }
-            double rangeTempo = MAX_TEMPO_FIXO - MIN_TEMPO_FIXO;
-            double rangeLoudness = MAX_LOUDNESS_FIXO - MIN_LOUDNESS_FIXO;
-
-            for (Musica musica : musicas) {
-                // --- APLICA A FÓRMULA DE NORMALIZAÇÃO ---
-
-                // Garante que o valor não saia da faixa 0-1, caso uma música tenha
-                // um valor fora da nossa escala fixa (ex: BPM 40 ou 260)
-                double tempoNormalizado = (musica.getTempo() - MIN_TEMPO_FIXO) / rangeTempo;
-                tempoNormalizado = Math.max(0.0, Math.min(1.0, tempoNormalizado)); // Clamping
-
-                double loudnessNormalizado = (musica.getLoudness() - MIN_LOUDNESS_FIXO) / rangeLoudness;
-                loudnessNormalizado = Math.max(0.0, Math.min(1.0, loudnessNormalizado)); // Clamping
-
-                // Define os valores normalizados no objeto Musica
-                setTempo(tempoNormalizado);
-                setLoudness(loudnessNormalizado);
-            }
+    public static void normalize(List<Musica> musicas) {
+        if (musicas == null || musicas.isEmpty()) {
+            return;
         }
+        double rangeTempo = MAX_TEMPO_FIXO - MIN_TEMPO_FIXO;
+        double rangeLoudness = MAX_LOUDNESS_FIXO - MIN_LOUDNESS_FIXO;
+
+        for (Musica musica : musicas) {
+            // --- APLICA A FÓRMULA DE NORMALIZAÇÃO ---
+            // Garante que o valor não saia da faixa 0-1, caso uma música tenha
+            // um valor fora da nossa escala fixa (ex: BPM 40 ou 260)
+            double tempoNormalizado = (musica.getTempo() - MIN_TEMPO_FIXO) / rangeTempo;
+            tempoNormalizado = Math.max(0.0, Math.min(1.0, tempoNormalizado));
+
+            double loudnessNormalizado = (musica.getLoudness() - MIN_LOUDNESS_FIXO) / rangeLoudness;
+            loudnessNormalizado = Math.max(0.0, Math.min(1.0, loudnessNormalizado));
+
+            musica.setTempo(tempoNormalizado);
+            musica.setLoudness(loudnessNormalizado);
+        }
+    }
 
         public String getTrackId() {
             return trackId;
