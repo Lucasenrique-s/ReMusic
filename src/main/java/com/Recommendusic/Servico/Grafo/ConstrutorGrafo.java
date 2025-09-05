@@ -25,7 +25,9 @@ public class ConstrutorGrafo {
                         Math.pow(m1.getAcousticness() - m2.getAcousticness(), 2) +
                         Math.pow(m1.getInstrumentalness() - m2.getInstrumentalness(), 2) +
                         Math.pow(m1.getLiveness() - m2.getLiveness(), 2) +
-                        Math.pow(m1.getValence() - m2.getValence(), 2)
+                        Math.pow(m1.getValence() - m2.getValence(), 2) +
+                        Math.pow(m1.getTempo() - m2.getTempo(), 2) +
+                        Math.pow(m1.getLoudness() - m2.getLoudness(), 2)
         );
         return dist;
     }
