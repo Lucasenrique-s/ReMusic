@@ -9,6 +9,7 @@ public class Musica {
         private final String trackName;
         private final String trackArtist;
         private final String playlistGenre;
+        private final String trackAlbum;
 
         private final double danceability;
         private final double energy;
@@ -22,11 +23,11 @@ public class Musica {
 
         //Variáveis para normalização de Loudness e Tempo pra colocar eles na faixa de 0 e 1.
         private static final double MIN_TEMPO_FIXO = 50.0;
-        private static final double MAX_TEMPO_FIXO = 250.0;
-        private static final double MIN_LOUDNESS_FIXO = -60.0;
+        private static final double MAX_TEMPO_FIXO = 300.0;
+        private static final double MIN_LOUDNESS_FIXO = -10.0;
         private static final double MAX_LOUDNESS_FIXO = 0.0;
 
-        public Musica(String trackId, String trackName, String trackArtist, String playlistGenre,
+        public Musica(String trackId, String trackName, String trackArtist, String playlistGenre, String trackAlbum,
                       double danceability, double energy, double loudness, double speechiness,
                       double acousticness, double instrumentalness, double liveness,
                       double valence, double tempo) {
@@ -35,6 +36,7 @@ public class Musica {
             this.trackArtist = trackArtist;
             this.playlistGenre = playlistGenre;
             this.danceability = danceability;
+            this.trackAlbum = trackAlbum;
             this.energy = energy;
             this.loudness = loudness;
             this.speechiness = speechiness;
@@ -70,6 +72,8 @@ public class Musica {
         public String getTrackId() {
             return trackId;
         }
+
+        public String getTrackAlbum(){ return trackAlbum; }
 
         public String getTrackName() {
             return trackName;
@@ -124,6 +128,23 @@ public class Musica {
         }
         public void setLoudness(double valor){
             loudness = valor;
+        }
+
+        public String getAudioFeatures(){
+            return String.format(
+                    "\t- Atributos: Dance: [%.2f] | Energy: [%.2f] | Valence: [%.2f] | Acoustic: [%.2f] " +
+                            "| Instrumental: [%.2f] | Live: [%.2f] | Speech: [%.2f] | Tempo: [%.3f] " +
+                            "| Loudness: [%.3f]",
+                    this.getDanceability(),
+                    this.getEnergy(),
+                    this.getValence(),
+                    this.getAcousticness(),
+                    this.getInstrumentalness(),
+                    this.getLiveness(),
+                    this.getSpeechiness(),
+                    this.getTempo(),
+                    this.getLoudness()
+            );
         }
 
         @Override

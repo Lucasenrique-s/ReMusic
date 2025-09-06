@@ -28,9 +28,9 @@ public class App {
             // Itera sobre cada linha (registro) do CSV
             for (CSVRecord csvRecord : csvParser) {
                 // Pega os dados de cada coluna pelo nome do cabeçalho
-                String trackName = csvRecord.get("name");
-                String artistName = csvRecord.get("artists");
-                String albumName = csvRecord.get("album");
+                String trackName = csvRecord.get("track_name");
+                String artistName = csvRecord.get("track_artist");
+                String albumName = csvRecord.get("track_album_name");
                 double danceability = Double.parseDouble(csvRecord.get("danceability"));
                 double energy = Double.parseDouble(csvRecord.get("energy"));
                 int tempo = (int) Double.parseDouble(csvRecord.get("tempo"));
