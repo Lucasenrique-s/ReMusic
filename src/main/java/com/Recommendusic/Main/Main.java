@@ -1,8 +1,9 @@
 package com.Recommendusic.Main;
 
 import com.Recommendusic.Servico.Entidades.Musica;
-import com.Recommendusic.Servico.Grafo.ConstrutorGrafo;
 import com.Recommendusic.Servico.Grafo.Grafo;
+import com.Recommendusic.Servico.Grafo.utils.ConstrutorGrafo;
+import com.Recommendusic.Servico.Grafo.utils.VisualizadorGrafo;
 import com.Recommendusic.Servico.MusicaServico;
 import com.Recommendusic.Servico.RecomendadorServico;
 
@@ -23,13 +24,17 @@ public class Main {
             // Para este exemplo, vamos usar um subconjunto menor de músicas para construir o grafo.
             // Construir com 30.000 músicas pode demorar MUITO tempo (horas).
             // Comece com 5.000 ou 10.000 para testar.
-            List<Musica> musicasParaGrafo = catalogo.obterMusicas(5000);
+            List<Musica> musicasParaGrafo = catalogo.obterMusicas(1000);
 
             // --- PASSO 2: CONSTRUIR O GRAFO ---
             ConstrutorGrafo construtor = new ConstrutorGrafo();
             // O metodo construirGrafo agora usa a nossa lista menor
             construtor.construirGrafo(musicasParaGrafo);
             Grafo grafo = construtor.getGrafo();
+            VisualizadorGrafo.exibir(grafo, catalogo);
+            System.out.println("\nVisualizador iniciado em uma janela separada.");
+            System.out.println("O programa principal ficará em pausa por 5 minutos para você poder ver o grafo.");
+            Thread.sleep(300000);
 
             // --- PASSO 3: OBTER RECOMENDAÇÕES ---
             RecomendadorServico recomendador = new RecomendadorServico();
@@ -58,11 +63,15 @@ public class Main {
                         System.out.println("\n--- Músicas recomendadas para você ---");
                         int i = 1;
                         for (Musica rec : recomendacoes) {
-                            System.out.println(i++ + ". " + rec.getTrackName() + " - " + rec.getTrackArtist());
+                            double dis = ConstrutorGrafo.calcularDistancia(musicaInicial,rec);
+                            System.out.println(i++ + ". " + rec.getTrackName() + " - " + rec.getTrackArtist() + " ["+ String.format("%.3f",dis) +"]");
+
+                            System.out.println(rec.getAudioFeatures());
                         }
                     }
                 } else {
-                    System.out.println("Desculpe, a música '" + musicaInicial.getTrackName() + "' não está no subconjunto de dados usado para gerar recomendações. Tente com uma música mais popular.");
+                    System.out.println("Desculpe, a música '" + musicaInicial.getTrackName() + "' não está no " +
+                            "subconjunto de dados usado para gerar recomendações. Tente com uma música mais popular.");
                 }
             } else {
                 System.out.println("Música não encontrada no catálogo.");
@@ -71,6 +80,9 @@ public class Main {
         } catch (IOException e) {
             System.err.println("Erro ao carregar o arquivo CSV: " + e.getMessage());
             e.printStackTrace();
+        }
+        catch (InterruptedException e) { // Adicione este catch para o Thread.sleep
+            throw new RuntimeException(e);
         }
     }
 }

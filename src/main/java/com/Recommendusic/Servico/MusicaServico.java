@@ -35,6 +35,7 @@ public class MusicaServico {
                                 record.get("track_name"),
                                 record.get("track_artist"),
                                 record.get("playlist_genre"),
+                                record.get("track_album_name"),
                                 Double.parseDouble(record.get("danceability")),
                                 Double.parseDouble(record.get("energy")),
                                 Double.parseDouble(record.get("loudness")),
