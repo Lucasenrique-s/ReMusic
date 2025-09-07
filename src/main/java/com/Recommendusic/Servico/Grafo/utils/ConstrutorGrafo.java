@@ -20,8 +20,8 @@ public class ConstrutorGrafo {
 
         //Problema: Não sei como inserir tempo e loudness, Tempo é em BPM e Loudness em decibeis, não são emdidos em números de 0-1.
 
-        final double PESO_ARTISTA = 0.4;
-        final double PESO_ALBUM = 0.2;
+        final double PESO_ARTISTA = 0.2;
+        final double PESO_ALBUM = 0.1;
 
         double dist = Math.sqrt(
                 Math.pow(m1.getDanceability() - m2.getDanceability(), 2) +
@@ -42,7 +42,7 @@ public class ConstrutorGrafo {
     public void construirGrafo(List<Musica> todasAsMusicas) {
         final double NOTA_DE_CORTE_MESMO_ARTISTA = 0.40; // Mais alta = mais fácil de conectar
         final double NOTA_DE_CORTE_MESMO_ALBUM  = 0.30; // Intermediária
-        final double NOTA_DE_CORTE_PADRAO       = 0.20; // Mais baixa = mais rigorosa
+        final double NOTA_DE_CORTE_PADRAO       = 0.25; // Mais baixa = mais rigorosa
 
         System.out.println("Iniciando a construção do grafo...");
 

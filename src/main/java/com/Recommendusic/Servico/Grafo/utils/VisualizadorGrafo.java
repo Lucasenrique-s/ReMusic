@@ -4,13 +4,10 @@ import com.Recommendusic.Servico.Entidades.Musica;
 import com.Recommendusic.Servico.Grafo.Aresta;
 import com.Recommendusic.Servico.Grafo.Grafo;
 import com.Recommendusic.Servico.MusicaServico;
+import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.layout.springbox.implementations.SpringBox; // Importa a classe específica
 import org.graphstream.ui.swing_viewer.SwingViewer;
 import org.graphstream.ui.swing_viewer.ViewPanel;
-import org.graphstream.ui.view.Viewer;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
 import java.awt.event.MouseWheelEvent;
@@ -23,47 +20,51 @@ public class VisualizadorGrafo {
         System.setProperty("org.graphstream.ui", "swing");
         SingleGraph graph = new SingleGraph("Grafo Musical");
 
+        // Stylesheet e adição de nós/arestas (continua igual, já estava correto)
         String stylesheet =
                 "graph {" +
-                        "   fill-color: white; " + // Fundo branco
+                        "   fill-color: #f0f0f0; padding: 40px; " +
                         "}" +
                         "node {" +
-                        "   size: 20px; " +                                  // Nós (pontos) menores
-                        "   fill-color: rgba(60, 130, 246, 180); " +       // Cor azul com 70% de transparência
-                        "   stroke-mode: none; " +                         // Sem borda preta nos nós
-                        "   text-mode: hidden; " +                         // Esconde os nomes para não poluir
-                        "}" +
-                        "node:hover {" +
-                        "   fill-color: red; " +                           // Nó fica vermelho quando o mouse passa por cima
-                        "   text-mode: normal; " +                         // Mostra o nome da música ao passar o mouse
+                        "   size: 20px; stroke-mode: plain; stroke-color: #444444; stroke-width: 1px; " +
+                        // 1. O texto agora é visível por padrão
+                        "   text-mode: normal; " +
+                        // 2. Ajustes para melhorar a leitura do texto
+                        "   text-size: 10px; " +
+                        "   text-color: #222222; " +
                         "   text-background-mode: plain; " +
-                        "   text-background-color: white; " +
-                        "   text-padding: 3px; " +
+                        "   text-background-color: rgba(255,255,255,180); " +
+                        "   text-padding: 1px; " +
+                        "   text-offset: 0px, -20px; " +
                         "}" +
                         "edge {" +
-                        "   size: 2px; " +                               // Arestas (linhas) bem finas
-                        "   fill-color: rgba(200, 200, 200, 120); " +      // Cor cinza com 50% de transparência
+                        "   size: 1px; fill-color: rgba(150, 150, 150, 150); " +
                         "}";
-
         graph.setAttribute("ui.stylesheet", stylesheet);
+        graph.setAttribute("ui.quality");
+        graph.setAttribute("ui.antialias");
 
-        // Adiciona os nós
+        Map<String, String> coresPorArtista = new HashMap<>();
+        String[] coresDisponiveis = {"#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFA1", "#FFC300", "#C70039"};
+        int corIndex = 0;
+
         for (String trackId : nossoGrafo.getAdjacencias().keySet()) {
             if (graph.getNode(trackId) == null) {
-                // USA O CATÁLOGO PARA BUSCAR A MÚSICA PELO ID
                 Optional<Musica> musicaOpt = catalogo.buscarMusicaPorId(trackId);
                 if (musicaOpt.isPresent()) {
                     Musica musica = musicaOpt.get();
-                    // Define o nome da música como o label do nó
-                    graph.addNode(trackId).setAttribute("ui.label", musica.getTrackArtist());
-                } else {
-                    // Caso não encontre a música no catálogo (pouco provável)
-                    graph.addNode(trackId).setAttribute("ui.label", trackId);
+                    String artista = musica.getTrackArtist();
+                    if (!coresPorArtista.containsKey(artista)) {
+                        coresPorArtista.put(artista, coresDisponiveis[corIndex % coresDisponiveis.length]);
+                        corIndex++;
+                    }
+                    org.graphstream.graph.Node node = graph.addNode(trackId);
+                    node.setAttribute("ui.label", musica.getTrackName() + " - " + artista);
+                    node.setAttribute("ui.style", "fill-color: " + coresPorArtista.get(artista) + ";");
                 }
             }
         }
 
-        // Adiciona as arestas
         Set<String> arestasAdicionadas = new HashSet<>();
         for (Map.Entry<String, List<Aresta>> entry : nossoGrafo.getAdjacencias().entrySet()) {
             String sourceId = entry.getKey();
@@ -71,7 +72,6 @@ public class VisualizadorGrafo {
                 String targetId = aresta.vizinho().getTrackId();
                 String edgeId = sourceId + "-" + targetId;
                 String reverseEdgeId = targetId + "-" + sourceId;
-
                 if (!arestasAdicionadas.contains(edgeId) && !arestasAdicionadas.contains(reverseEdgeId)) {
                     graph.addEdge(edgeId, sourceId, targetId);
                     arestasAdicionadas.add(edgeId);
@@ -79,17 +79,21 @@ public class VisualizadorGrafo {
             }
         }
 
-        // --- ESTRUTURA CORRETA PARA GARANTIR TODA A INTERATIVIDADE ---
-        // 1. Cria o Viewer (visualizador)
+        // --- SEÇÃO CORRIGIDA ---
+        // 1. Declara o layout como SpringBox para acessar seus métodos
+        SpringBox layout = new SpringBox(false);
+
+        // 2. Usa os métodos SETTER específicos da classe SpringBox
+        // Aumenta a força de repulsão (experimente valores como 100, 200, 500)
+        layout.setForce(1.4);
+        // Define o limite de estabilização (valores entre 0 e 1, mais perto de 1 é melhor)
+        layout.setStabilizationLimit(0.8);
+
         Viewer viewer = new SwingViewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        viewer.enableAutoLayout(layout); // Passa nosso layout configurado
 
-        // 2. Ativa o layout automático
-        viewer.enableAutoLayout();
-
-        // 3. Pega o painel de visualização (a "tela" onde o grafo é desenhado)
         ViewPanel viewPanel = (ViewPanel) viewer.addDefaultView(false);
 
-        // 4. Adiciona o listener de zoom que já tínhamos feito
         viewPanel.addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -97,8 +101,13 @@ public class VisualizadorGrafo {
                 viewPanel.getCamera().setViewPercent(viewPanel.getCamera().getViewPercent() * zoomFactor);
             }
         });
-        viewer = graph.display();
-        viewer.enableAutoLayout();
+
+        javax.swing.JFrame frame = new javax.swing.JFrame("Grafo Musical");
+        frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        frame.add(viewPanel);
+        frame.pack();
+        frame.setSize(1280, 720);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }
-
