@@ -30,7 +30,7 @@ public class VisualizadorGrafo {
                         // 1. O texto agora é visível por padrão
                         "   text-mode: normal; " +
                         // 2. Ajustes para melhorar a leitura do texto
-                        "   text-size: 10px; " +
+                        "   text-size: 12px; " +
                         "   text-color: #222222; " +
                         "   text-background-mode: plain; " +
                         "   text-background-color: rgba(255,255,255,180); " +
