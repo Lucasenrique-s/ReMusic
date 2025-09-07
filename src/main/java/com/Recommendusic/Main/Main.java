@@ -33,8 +33,7 @@ public class Main {
             Grafo grafo = construtor.getGrafo();
             VisualizadorGrafo.exibir(grafo, catalogo);
             System.out.println("\nVisualizador iniciado em uma janela separada.");
-            System.out.println("O programa principal ficará em pausa por 5 minutos para você poder ver o grafo.");
-            Thread.sleep(300000);
+
 
             // --- PASSO 3: OBTER RECOMENDAÇÕES ---
             RecomendadorServico recomendador = new RecomendadorServico();
@@ -81,8 +80,6 @@ public class Main {
             System.err.println("Erro ao carregar o arquivo CSV: " + e.getMessage());
             e.printStackTrace();
         }
-        catch (InterruptedException e) { // Adicione este catch para o Thread.sleep
-            throw new RuntimeException(e);
-        }
+
     }
 }
