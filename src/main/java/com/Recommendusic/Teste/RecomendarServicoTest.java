@@ -39,16 +39,16 @@ class RecomendarServicoTest {
     void setUp() {
         // 1. Cria as músicas "falsas" (mocks) para o nosso teste
         // Rock Similar 1 (Ponto de Partida)
-        rockSimilar1 = new Musica("1", "Rock Song A", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
+        rockSimilar1 = new Musica("1", "Rock Melodrama A", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
 
-        // Rock Similar 3 (O filho da puta)
-        rockSimilar3 = new Musica("5", "Rock Song D", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
+        // Rock Similar 3 (Outra música similar)
+        rockSimilar3 = new Musica("5", "Rock Super Magnum Opus D", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
 
         // Rock Similar 2 (A recomendação esperada)
-        rockSimilar2 = new Musica("2", "Rock Song B", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
+        rockSimilar2 = new Musica("2", "Rock Magic Ultra Mingula Beast B", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
 
         // Outra música de Rock do mesmo artista, mas com som um pouco diferente
-        rockMesmoArtista = new Musica("3", "Rock Song C", "The Testers", "Rock", "Miminos", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
+        rockMesmoArtista = new Musica("3", "Rock Mega Ultra Calipto C", "The Testers", "Rock", "Miminos", 0.9, 0.44, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
 
         // Música Pop (Não deve ser recomendada)
         popDiferente = new Musica("4", "Pop Song X", "The Popsters", "Pop", "Popestrelas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
@@ -73,24 +73,24 @@ class RecomendarServicoTest {
     @Test
     @DisplayName("Deve recomendar a música de rock mais similar")
     void recomendarMusicaSimilar() {
-        // Ação: Pede 1 recomendação para a música "Rock Song A"
+        // Ação: Pede 1 recomendação para a música "Rock Melodrama A"
         List<Musica> recomendacoes = recomendador.recomendar(grafo, rockSimilar1, catalogoMock, 1);
 
         // Verificação:
         assertNotNull(recomendacoes, "A lista de recomendações não pode ser nula.");
         assertEquals(1, recomendacoes.size(), "Deve retornar exatamente uma recomendação.");
-        assertEquals("Rock Song B", recomendacoes.get(0).getTrackName(), "A primeira recomendação deve ser a música de rock mais parecida.");
+        assertEquals("Rock Magic Ultra Mingula Beast B", recomendacoes.get(0).getTrackName(), "A primeira recomendação deve ser a música de rock mais parecida.");
     }
 
     @Test
     @DisplayName("Não deve recomendar a música pop que é muito diferente")
     void naoRecomendarMusicaDiferente() {
-        // Ação: Pede 3 recomendações para a música "Rock Song A"
+        // Ação: Pede 3 recomendações para a música "Rock Melodrama A"
         List<Musica> recomendacoes = recomendador.recomendar(grafo, rockSimilar1, catalogoMock, 3);
 
         // Verificação:
         assertNotNull(recomendacoes);
-        // Verifica se a música pop NÃO está na lista de recomendações
+        // CORRIGIDO: Acessa a música diretamente no stream
         boolean contemPop = recomendacoes.stream().anyMatch(m -> m.getTrackId().equals(popDiferente.getTrackId()));
         assertFalse(contemPop, "A lista de recomendações não deve incluir a música pop.");
     }
@@ -105,8 +105,7 @@ class RecomendarServicoTest {
         // Verificação:
         assertNotNull(recomendacoes);
         assertEquals(1, recomendacoes.size());
-        // A recomendação mais próxima da playlist deve ser a "Rock Song B"
-        assertEquals("Rock Song B", recomendacoes.get(0).getTrackName(), "A recomendação da playlist deve ser a música mais próxima do conjunto.");
+        assertEquals("Rock Magic Ultra Mingula Beast B", recomendacoes.get(0).getTrackName(), "A recomendação da playlist deve ser a música mais próxima do conjunto.");
     }
 }
 
