@@ -85,7 +85,7 @@ public class VisualizadorGrafo {
 
         // 2. Usa os métodos SETTER específicos da classe SpringBox
         // Aumenta a força de repulsão (experimente valores como 100, 200, 500)
-        layout.setForce(1.4);
+        layout.setForce(1.2);
         // Define o limite de estabilização (valores entre 0 e 1, mais perto de 1 é melhor)
         layout.setStabilizationLimit(0.8);
 
