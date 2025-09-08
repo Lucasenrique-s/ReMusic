@@ -79,7 +79,7 @@ public class InterfaceUsuario extends Application {
         Label quantidadeLabel = new Label("Quantidade de Recomendações");
         quantidadeLabel.setStyle("-fx-font-weight: bold;");
         quantidadeSpinner = new Spinner<>(1, 50, 10);
-        quantidadeSpinner.setEditable(true); // Permite digitar o valor também
+        quantidadeSpinner.setEditable(true);
 
         controlsVBox.getChildren().addAll(
                 singleSongLabel, nomeMusicaField, nomeArtistaField, recommendSingleButton,
