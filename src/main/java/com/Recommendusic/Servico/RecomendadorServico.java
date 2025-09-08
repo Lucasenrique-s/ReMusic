@@ -3,6 +3,7 @@ package com.Recommendusic.Servico;
 import com.Recommendusic.Servico.Entidades.Musica;
 import com.Recommendusic.Servico.Grafo.Aresta;
 import com.Recommendusic.Servico.Grafo.Grafo;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,13 +69,46 @@ public class RecomendadorServico {
         }
 
         // Agora, o mapa 'distancias' contém o caminho mais curto a partir de QUALQUER música da playlist.
-        // Vamos ordenar e pegar as 'quantidade' melhores recomendações.
-        return distancias.entrySet().stream()
-                .filter(entry -> !playlistIds.contains(entry.getKey())) // Exclui as músicas que já estão na playlist
-                .sorted(Map.Entry.comparingByValue()) // Ordena pela menor distância
-                .limit(quantidade) // Pega as top N
-                .map(entry -> catalogo.buscarMusicaPorId(entry.getKey()).orElse(null)) // Converte o ID de volta para um objeto Musica
-                .filter(Objects::nonNull) // Remove qualquer música que não foi encontrada no catálogo
+        int quantidadeInicial = quantidade * 3;
+
+        List<Musica> recomendacoesIniciais = distancias.entrySet().stream()
+                .filter(entry -> !playlistIds.contains(entry.getKey()))
+                .sorted(Map.Entry.comparingByValue())
+                .limit(quantidadeInicial)
+                .map(entry -> catalogo.buscarMusicaPorId(entry.getKey()).orElse(null))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+
+        // FILTRO 1: Remover versões diferentes da mesma música da playlist.
+        List<Musica> recomendacoesFiltradas = recomendacoesIniciais.stream()
+                .filter(rec -> playlist.stream().noneMatch(inicial -> isNomeSimilar(rec.getTrackName(), inicial.getTrackName())))
+                .collect(Collectors.toList());
+
+        // FILTRO 2: Remover duplicados exatos da própria lista de recomendações.
+        List<Musica> recomendacoesUnicas = new ArrayList<>();
+        Set<String> musicasJaAdicionadas = new HashSet<>();
+        for (Musica rec : recomendacoesFiltradas) {
+            String chaveUnica = rec.getTrackName().toLowerCase() + "|" + rec.getTrackArtist().toLowerCase();
+            if (musicasJaAdicionadas.add(chaveUnica)) {
+                recomendacoesUnicas.add(rec);
+            }
+        }
+
+        // Retorna a lista final com a quantidade desejada.
+        return recomendacoesUnicas.stream()
+                .limit(quantidade)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isNomeSimilar(String s1, String s2) {
+        final double LIMITE_SIMILARIDADE = 0.85;
+        String s1Limpo = s1.replaceAll("\\(.*\\)", "").trim();
+        String s2Limpo = s2.replaceAll("\\(.*\\)", "").trim();
+        LevenshteinDistance levenshtein = new LevenshteinDistance();
+        int distancia = levenshtein.apply(s1Limpo.toLowerCase(), s2Limpo.toLowerCase());
+        int lenMax = Math.max(s1Limpo.length(), s2Limpo.length());
+        if (lenMax == 0) return true;
+        double similaridade = 1.0 - ((double) distancia / lenMax);
+        return similaridade >= LIMITE_SIMILARIDADE;
     }
 }
