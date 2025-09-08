@@ -13,12 +13,8 @@ public class ConstrutorGrafo {
     }
 
     public static double calcularDistancia(Musica m1, Musica m2) {
-        // Distância Euclidiana com 7 dimensões: danceability, energia, speechiness, acousticness, instrumentalness,
-        // liveness e valence
-
-        //A distância é calculada pela raiz quadrada da soma dos quadrados dos valores de cada um dos atributos.
-
-        //Problema: Não sei como inserir tempo e loudness, Tempo é em BPM e Loudness em decibeis, não são emdidos em números de 0-1.
+        // Distância Euclidiana com 7 dimensões: danceability, energy, speechiness, acousticness, instrumentalness,liveness, valence, tempo, loudness
+        // A distância é calculada pela raiz quadrada da soma dos quadrados dos valores de cada um dos atributos.
 
         final double PESO_ARTISTA = 0.2;
         final double PESO_GENERO = 0.08;
@@ -65,17 +61,17 @@ public class ConstrutorGrafo {
 
                 // Define um "limite de similaridade" para não conectar
                 // músicas muito diferentes e poluir o grafo.
-                // Este valor é experimental, você pode ajustá-lo.
                 double notaDeCorteAtual;
 
                 // Prioridade máxima: mesmo artista
                 if (musicaA.getTrackArtist().contains(musicaB.getTrackArtist())) {
                     notaDeCorteAtual = NOTA_DE_CORTE_MESMO_ARTISTA;
                 }
-                // Segunda prioridade: mesmo álbum (caso de coletâneas com artistas diferentes)
+                // Segunda prioridade: mesmo álbum
                 else if (musicaA.getTrackAlbum().equals(musicaB.getTrackAlbum())) {
                     notaDeCorteAtual = NOTA_DE_CORTE_MESMO_ALBUM;
                 }
+                // Terceira prioridade: mesmo genero
                 else if (musicaA.getPlaylistGenre().equals(musicaB.getPlaylistGenre())) {
                     notaDeCorteAtual = NOTA_DE_CORTE_MESMO_GENERO;
                 }
@@ -84,12 +80,10 @@ public class ConstrutorGrafo {
                     notaDeCorteAtual = NOTA_DE_CORTE_PADRAO;
                 }
 
-                // --- 3. APLIQUE A NOTA DE CORTE ESCOLHIDA ---
                 if (distancia < notaDeCorteAtual) {
                     grafo.adicionarAresta(musicaA, musicaB, distancia);
                 }
             }
-            // Imprime um progresso para saber que o programa não travou
             if (i % 1000 == 0) {
                 System.out.println("Processando música " + i + " de " + todasAsMusicas.size());
             }
