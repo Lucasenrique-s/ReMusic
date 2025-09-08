@@ -21,6 +21,7 @@ public class ConstrutorGrafo {
         //Problema: Não sei como inserir tempo e loudness, Tempo é em BPM e Loudness em decibeis, não são emdidos em números de 0-1.
 
         final double PESO_ARTISTA = 0.2;
+        final double PESO_GENERO = 0.08;
         final double PESO_ALBUM = 0.1;
 
         double dist = Math.sqrt(
@@ -33,6 +34,7 @@ public class ConstrutorGrafo {
                         Math.pow(m1.getValence() - m2.getValence(), 2) +
                         Math.pow(PESO_ARTISTA * compararArtista(m1,m2), 2) +
                         Math.pow(PESO_ALBUM * compararAlbum(m1,m2), 2) +
+                        Math.pow(PESO_GENERO * compararGenero(m1,m2), 2) +
                         Math.pow(m1.getTempo() - m2.getTempo(), 2) +
                         Math.pow(m1.getLoudness() - m2.getLoudness(), 2)
         );
@@ -42,7 +44,8 @@ public class ConstrutorGrafo {
     public void construirGrafo(List<Musica> todasAsMusicas) {
         final double NOTA_DE_CORTE_MESMO_ARTISTA = 0.40; // Mais alta = mais fácil de conectar
         final double NOTA_DE_CORTE_MESMO_ALBUM  = 0.30; // Intermediária
-        final double NOTA_DE_CORTE_PADRAO       = 0.25; // Mais baixa = mais rigorosa
+        final double NOTA_DE_CORTE_MESMO_GENERO = 0.25; // Quase mais baixa
+        final double NOTA_DE_CORTE_PADRAO       = 0.05; // Mais baixa = mais rigorosa
 
         System.out.println("Iniciando a construção do grafo...");
 
@@ -73,6 +76,9 @@ public class ConstrutorGrafo {
                 else if (musicaA.getTrackAlbum().equals(musicaB.getTrackAlbum())) {
                     notaDeCorteAtual = NOTA_DE_CORTE_MESMO_ALBUM;
                 }
+                else if (musicaA.getPlaylistGenre().equals(musicaB.getPlaylistGenre())) {
+                    notaDeCorteAtual = NOTA_DE_CORTE_MESMO_GENERO;
+                }
                 // Caso padrão para todas as outras músicas
                 else {
                     notaDeCorteAtual = NOTA_DE_CORTE_PADRAO;
@@ -93,7 +99,7 @@ public class ConstrutorGrafo {
 
     public static int compararArtista(Musica m1, Musica m2){
         int ehMesmo = 1;
-        if(m1.getTrackArtist().contains(m2.getTrackArtist())){
+        if(m1.getTrackArtist().equalsIgnoreCase(m2.getTrackArtist())){
             ehMesmo = 0;
         }
         return ehMesmo;
@@ -101,7 +107,15 @@ public class ConstrutorGrafo {
 
     public static int compararAlbum(Musica m1, Musica m2){
         int ehMesmo = 1;
-        if(m1.getTrackAlbum().equals(m2.getTrackAlbum())){
+        if(m1.getTrackAlbum().equalsIgnoreCase(m2.getTrackAlbum())){
+            ehMesmo = 0;
+        }
+        return ehMesmo;
+    }
+
+    public static int compararGenero(Musica m1, Musica m2){
+        int ehMesmo = 1;
+        if(m1.getPlaylistGenre().equalsIgnoreCase(m2.getPlaylistGenre())){
             ehMesmo = 0;
         }
         return ehMesmo;

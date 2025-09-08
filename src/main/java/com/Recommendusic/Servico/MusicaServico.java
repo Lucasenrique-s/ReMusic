@@ -22,6 +22,10 @@ public class MusicaServico {
             carregarMusicas(caminhoCsv);
         }
 
+        public MusicaServico(List<Musica> musicas) {
+            this.musicas = musicas;
+        }
+
         private void carregarMusicas(String caminhoCsv) throws IOException {
             System.out.println("Carregando o catálogo de músicas...");
 
