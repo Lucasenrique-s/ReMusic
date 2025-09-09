@@ -5,7 +5,7 @@ import com.Recommendusic.Servico.Grafo.Aresta;
 import com.Recommendusic.Servico.Grafo.Grafo;
 import com.Recommendusic.Servico.MusicaServico;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.layout.springbox.implementations.SpringBox; // Importa a classe específica
+import org.graphstream.ui.layout.springbox.implementations.SpringBox;
 import org.graphstream.ui.swing_viewer.SwingViewer;
 import org.graphstream.ui.swing_viewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;

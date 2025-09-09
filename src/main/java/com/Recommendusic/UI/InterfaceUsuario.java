@@ -99,7 +99,6 @@ public class InterfaceUsuario extends Application {
         BorderPane.setMargin(centerVBox, new Insets(0, 0, 0, 10));
         borderPane.setCenter(centerVBox);
 
-        // --- BARRA DE STATUS (ABAIXO) ---
         statusLabel = new Label("Bem-vindo! Escolha uma opção para começar.");
         borderPane.setBottom(statusLabel);
 
@@ -121,7 +120,7 @@ public class InterfaceUsuario extends Application {
 
         if (musicaInicialOpt.isPresent()) {
             statusLabel.setText("Gerando recomendações para: " + musicaInicialOpt.get().getTrackName());
-            int quantidade = getQuantidadeRecomendacoes(); // Pega o valor do spinner
+            int quantidade = getQuantidadeRecomendacoes();
             List<Musica> recomendacoes = recomendador.recomendar(grafo, musicaInicialOpt.get(), catalogo, quantidade);
             exibirRecomendacoes(recomendacoes);
             statusLabel.setText("Recomendações geradas com sucesso!");
@@ -171,7 +170,7 @@ public class InterfaceUsuario extends Application {
     }
 
     private void lidarComVisualizacaoGrafo() {
-        statusLabel.setText("Abrindo visualizador de grafo... Isso pode ser pesado e demorado.");
+        statusLabel.setText("Abrindo visualizador de grafo...");
         new Thread(() -> {
             try {
                 VisualizadorGrafo.exibir(grafo, catalogo);
