@@ -38,20 +38,21 @@ class RecomendarServicoTest {
     @BeforeEach
     void setUp() {
         // 1. Cria as músicas "falsas" (mocks) para o nosso teste
-        // Rock Similar 1 (Ponto de Partida)
-        rockSimilar1 = new Musica("1", "Rock Melodrama A", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
 
-        // Rock Similar 3 (Outra música similar)
-        rockSimilar3 = new Musica("5", "Rock Super Magnum Opus D", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
+        // Rock Similar 1 (Ponto de Partida)
+        rockSimilar1 = new Musica("1", "Solar Flare", "The Testers", "rock", "Cosmic Rock", 0.60, 0.85, -7.0, 0.05, 0.10, 0.70, 0.15, 0.40, 120.0);
 
         // Rock Similar 2 (A recomendação esperada)
-        rockSimilar2 = new Musica("2", "Rock Magic Ultra Mingula Beast B", "The Testers", "Rock", "Mamonas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
+        rockSimilar2 = new Musica("2", "Meteor Shower", "The Testers", "rock", "Cosmic Rock", 0.62, 0.83, -7.2, 0.06, 0.11, 0.68, 0.16, 0.42, 122.0);
 
-        // Outra música de Rock do mesmo artista, mas com som um pouco diferente
-        rockMesmoArtista = new Musica("3", "Rock Mega Ultra Calipto C", "The Testers", "Rock", "Miminos", 0.9, 0.44, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
+        // Rock Similar 3 (Outra música similar)
+        rockSimilar3 = new Musica("5", "Nebula's Cry", "The Testers", "rock", "Cosmic Rock", 0.58, 0.88, -6.8, 0.04, 0.15, 0.75, 0.12, 0.38, 118.0);
+
+        // Outra música de Rock do mesmo artista, mas com som diferente
+        rockMesmoArtista = new Musica("3", "Supernova", "The Testers", "rock", "Galactic Hits", 0.55, 0.92, -6.0, 0.08, 0.05, 0.60, 0.25, 0.55, 125.0);
 
         // Música Pop (Não deve ser recomendada)
-        popDiferente = new Musica("4", "Pop Song X", "The Popsters", "Pop", "Popestrelas", 0.9, 0.5, -7.0, 0.8, 0.6, 0.0, 0.2, 0.9, 100.0);
+        popDiferente = new Musica("4", "Dancing Queen", "The Popsters", "pop", "Pop Stars", 0.85, 0.70, -5.0, 0.15, 0.30, 0.01, 0.08, 0.75, 110.0);
 
         List<Musica> listaDeMusicas = List.of(rockSimilar1, rockSimilar2, rockSimilar3, rockMesmoArtista, popDiferente);
 
@@ -79,7 +80,8 @@ class RecomendarServicoTest {
         // Verificação:
         assertNotNull(recomendacoes, "A lista de recomendações não pode ser nula.");
         assertEquals(1, recomendacoes.size(), "Deve retornar exatamente uma recomendação.");
-        assertEquals("Rock Magic Ultra Mingula Beast B", recomendacoes.get(0).getTrackName(), "A primeira recomendação deve ser a música de rock mais parecida.");
+        assertEquals("Meteor Shower", recomendacoes.get(0).getTrackName(), "A primeira recomendação deve ser a música de rock mais parecida.");
+        System.out.println(recomendacoes);
     }
 
     @Test
@@ -93,6 +95,7 @@ class RecomendarServicoTest {
         // CORRIGIDO: Acessa a música diretamente no stream
         boolean contemPop = recomendacoes.stream().anyMatch(m -> m.getTrackId().equals(popDiferente.getTrackId()));
         assertFalse(contemPop, "A lista de recomendações não deve incluir a música pop.");
+        System.out.println(recomendacoes);
     }
 
     @Test
@@ -100,12 +103,13 @@ class RecomendarServicoTest {
     void recomendarPorPlaylist() {
         // Ação: Cria uma playlist e pede recomendações
         List<Musica> playlist = List.of(rockSimilar1, rockMesmoArtista);
-        List<Musica> recomendacoes = recomendador.recomendarPorPlaylist(grafo, playlist, catalogoMock, 1);
+        List<Musica> recomendacoes = recomendador.recomendarPorPlaylist(grafo, playlist, catalogoMock, 4);
 
         // Verificação:
         assertNotNull(recomendacoes);
-        assertEquals(1, recomendacoes.size());
-        assertEquals("Rock Magic Ultra Mingula Beast B", recomendacoes.get(0).getTrackName(), "A recomendação da playlist deve ser a música mais próxima do conjunto.");
+        assertEquals(3, recomendacoes.size());
+        assertEquals("Meteor Shower", recomendacoes.get(0).getTrackName(), "A recomendação da playlist deve ser a música mais próxima do conjunto.");
+        System.out.println(recomendacoes);
     }
 }
 

@@ -20,7 +20,7 @@ public class Main {
             String caminhoCsv = "data/spotify_songs.csv";
             MusicaServico catalogo = new MusicaServico(caminhoCsv);
 
-            int tamanhoDoGrafo = 32835;
+            int tamanhoDoGrafo = 200;
             System.out.println("\nUsando as primeiras " + tamanhoDoGrafo + " músicas para construir o grafo...");
             List<Musica> musicasParaGrafo = catalogo.obterMusicas(tamanhoDoGrafo);
             ConstrutorGrafo construtor = new ConstrutorGrafo();

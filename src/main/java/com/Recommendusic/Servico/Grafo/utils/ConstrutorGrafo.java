@@ -41,7 +41,7 @@ public class ConstrutorGrafo {
         final double NOTA_DE_CORTE_MESMO_ARTISTA = 0.40; // Mais alta = mais fácil de conectar
         final double NOTA_DE_CORTE_MESMO_ALBUM  = 0.30; // Intermediária
         final double NOTA_DE_CORTE_MESMO_GENERO = 0.25; // Quase mais baixa
-        final double NOTA_DE_CORTE_PADRAO       = 0.05; // Mais baixa = mais rigorosa
+        final double NOTA_DE_CORTE_PADRAO       = 0.15; // Mais baixa = mais rigorosa
 
         System.out.println("Iniciando a construção do grafo...");
 
